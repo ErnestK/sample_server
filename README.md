@@ -1,8 +1,8 @@
-1) in env you should set full path to you postitions.db file
-
-2)
-- From bin 
-bin/sample-server
+1) in env you should set full path to you postitions.db file           
+           
+2)           
+- From bin            
+`bin/sample-server`           
                
 or           
            
