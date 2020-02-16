@@ -1,7 +1,7 @@
 package main
 
 import (
-	config "app/initialize_config"
+	config "app/config"
 	"context"
 	"flag"
 	"log"
@@ -16,8 +16,7 @@ import (
 )
 
 func main() {
-	timeout := get_timeout_for("TIMEOUT")
-	idle_timeout := get_timeout_for("IDLE_TIMEOUT")
+	timeout := getTimeoutFor("TIMEOUT")
 
 	var wait time.Duration
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*timeout, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
@@ -30,7 +29,7 @@ func main() {
 		// Good practice to set timeouts to avoid Slowloris attacks.
 		WriteTimeout: time.Second * timeout,
 		ReadTimeout:  time.Second * timeout,
-		IdleTimeout:  time.Second * idle_timeout,
+		IdleTimeout:  time.Second * getTimeoutFor("IDLE_TIMEOUT"),
 		Handler:      router, // Pass our instance of gorilla/mux in.
 	}
 
@@ -57,11 +56,11 @@ func main() {
 	os.Exit(0)
 }
 
-func get_timeout_for(str string) time.Duration {
-	timeout_int, err := strconv.Atoi(os.Getenv(str))
+func getTimeoutFor(str string) time.Duration {
+	timeoutInt, err := strconv.Atoi(os.Getenv(str))
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	return time.Duration(timeout_int)
+	return time.Duration(timeoutInt)
 }
