@@ -6,6 +6,8 @@ import (
     "net/http"
     "encoding/json"
 
+    "github.com/gorilla/mux"
+
     "database/sql"
     _ "github.com/mattn/go-sqlite3"
 )
@@ -13,22 +15,21 @@ import (
 var DB *sql.DB 
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-    v := r.URL.Query()
-    fmt.Println(v.Get("name"))
-
-    db, err := sql.Open("sqlite3", "/Users/ernestkhasanzhinov/work/go/sample_server/db/positions.db")
-    if err != nil {
-        log.Fatalln(err)
-    }
+    w.Header().Set("Content-Type", "application/json")
+    
+    vars := mux.Vars(r) 
 
     summary := CountByDomain{}
-    err = db.QueryRow("select domain, count(*) count from positions group by domain having domain = 'apostrophied.co.uk'").Scan(&summary.Domain, &summary.Count)
+    sql_stmt := "select domain, count(*) count from positions group by domain having domain = '%s'"
 
-    fmt.Println(summary)
+    err := DB.QueryRow(fmt.Sprintf(sql_stmt, vars["domain_name"])).Scan(&summary.Domain, &summary.Count)
+    if err != nil {
+        log.Println("Error duraing access to db!")
+    }
 
     bytes, err := json.Marshal(summary)
     if err != nil {
-        fmt.Println("Can't serialize", summary)
+        log.Println("Can't serialize", summary)
     }
 
     w.Write(bytes)

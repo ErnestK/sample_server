@@ -12,6 +12,6 @@ type Position struct {
 }
 
 type DomainWithPosition struct {
-    Domain    string        `json:"keyword"`
+    Domain    string        `json:"domain"`
     Positions []Position    `json:"positions"`
 }

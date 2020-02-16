@@ -9,27 +9,28 @@ import (
     "os"
     "os/signal"
     "time"
+    "strconv"
 
+    _ "github.com/joho/godotenv/autoload"
     _ "github.com/mattn/go-sqlite3"
 )
 
-const Timeout = 15
-const IdleTimeout = 15
-const Host = "0.0.0.0:3000"
-
 func main() {
+    timeout := get_timeout_for("TIMEOUT")
+    idle_timeout := get_timeout_for("IDLE_TIMEOUT")
+
     var wait time.Duration
-    flag.DurationVar(&wait, "graceful-timeout", time.Second * Timeout, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
+    flag.DurationVar(&wait, "graceful-timeout", time.Second * timeout, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
     flag.Parse()
 
     router := config.InitRouter()
 
     srv := &http.Server{
-        Addr:         Host,
+        Addr:         os.Getenv("HOST"),
         // Good practice to set timeouts to avoid Slowloris attacks.
-        WriteTimeout: time.Second * Timeout,
-        ReadTimeout:  time.Second * Timeout,
-        IdleTimeout:  time.Second * IdleTimeout,
+        WriteTimeout: time.Second * timeout,
+        ReadTimeout:  time.Second * timeout,
+        IdleTimeout:  time.Second * idle_timeout,
         Handler: router, // Pass our instance of gorilla/mux in.
     }
 
@@ -54,5 +55,14 @@ func main() {
     srv.Shutdown(ctx)
     log.Println("shutting down")
     os.Exit(0)
+}
+
+func get_timeout_for(str string) time.Duration {
+    timeout_int, err := strconv.Atoi(os.Getenv(str))
+    if err != nil {
+      log.Fatal("Error loading .env file")
+    }
+
+    return time.Duration(timeout_int)
 }
 
