@@ -1,36 +1,36 @@
 package get_summary
 
 import (
-    "fmt"
-    "log"
-    "net/http"
-    "encoding/json"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
 
-    "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 
-    "database/sql"
-    _ "github.com/mattn/go-sqlite3"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-var DB *sql.DB 
+var DB *sql.DB
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    
-    vars := mux.Vars(r) 
+	w.Header().Set("Content-Type", "application/json")
 
-    summary := CountByDomain{}
-    sql_stmt := "select domain, count(*) count from positions group by domain having domain = '%s'"
+	vars := mux.Vars(r)
 
-    err := DB.QueryRow(fmt.Sprintf(sql_stmt, vars["domain_name"])).Scan(&summary.Domain, &summary.Count)
-    if err != nil {
-        log.Println("Error duraing access to db!")
-    }
+	summary := CountByDomain{}
+	sql_stmt := "select domain, count(*) count from positions group by domain having domain = '%s'"
 
-    bytes, err := json.Marshal(summary)
-    if err != nil {
-        log.Println("Can't serialize", summary)
-    }
+	err := DB.QueryRow(fmt.Sprintf(sql_stmt, vars["domain_name"])).Scan(&summary.Domain, &summary.Count)
+	if err != nil {
+		log.Println("Error duraing access to db!")
+	}
 
-    w.Write(bytes)
+	bytes, err := json.Marshal(summary)
+	if err != nil {
+		log.Println("Can't serialize", summary)
+	}
+
+	w.Write(bytes)
 }
