@@ -3,13 +3,13 @@
 2)
 - From bin 
 bin/sample-server
+               
+or           
+           
+- From source           
+`(cd src/app/ && dp ensure)`           
+`go run src/app/main.go`           
 
-or 
-
-- From source
-(cd src/app/ && dp ensure)
-go run src/app/main.go
-
-3) For checks routes 
-http://localhost:3000/summary/apostrophied.co.uk
-http://localhost:3000/positions/apostrophied.co.uk?sortBy=keyword&page=3
+3) For checks routes            
+http://localhost:3000/summary/apostrophied.co.uk           
+http://localhost:3000/positions/apostrophied.co.uk?sortBy=keyword&page=3           
