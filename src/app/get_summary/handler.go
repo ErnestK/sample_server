@@ -10,6 +10,8 @@ import (
     _ "github.com/mattn/go-sqlite3"
 )
 
+var DB *sql.DB 
+
 func Handler(w http.ResponseWriter, r *http.Request) {
     v := r.URL.Query()
     fmt.Println(v.Get("name"))
