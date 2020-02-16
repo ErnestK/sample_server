@@ -7,7 +7,7 @@
 or           
            
 - From source           
-`(cd src/app/ && dp ensure)`           
+`(cd src/app/ && dep ensure)`           
 `go run src/app/main.go`           
 
 3) For checks routes            
