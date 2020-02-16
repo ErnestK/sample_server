@@ -25,7 +25,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	domainName := vars["domain_name"]
 
 	query := r.URL.Query()
-	sortBy := getOrDefault(query.Get("sort_by"), defaultSortBy)
+	sortBy := getOrDefault(query.Get("sortBy"), defaultSortBy)
 
 	pageStr := getOrDefault(query.Get("page"), defaultPage)
 	page, err := strconv.Atoi(pageStr)
